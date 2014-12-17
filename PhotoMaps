@@ -1,0 +1,103 @@
+#-------------------------------------------------------------------------------
+# Name:        replaces photo elements in an MXD with photos from a new folder
+# Purpose:
+#
+# Author:      nansak1
+#
+# Created:     01/05/2014
+# Copyright:   (c) nansak1 2014
+# Licence:     <your licence>
+#-------------------------------------------------------------------------------
+
+import arcpy
+import sys
+import os
+import os.path
+import fnmatch
+import re
+
+newPhoto = "Q:\file\path\photos"
+photoList = []
+newfile =''
+
+# Cleans up the jpg file names in the new folder
+for file in os.listdir('Q:\\file\\path\\photos'):
+    if fnmatch.fnmatch(file, '*.jpg'):
+        if len(file) > 7: # if filename greater than 7 e.g. if file name is not 09A.jpg(districtname.jpg)
+            print ("rename"+" "+file)
+            p1, p2 = file.split('_') #split it using _
+            regex = re.compile(r'\d+') # check if an of the split parts contain digits
+            if regex.findall(p1) > regex.findall(p2):
+                if len(p1) >= 7:
+                    newfile = p1
+                    #print newfile
+                else:
+                    newfile = p1+'.jpg'
+                    #print newfile
+            else:
+                    if len(p2) >= 7:
+                        newfile = p2
+                        #print newfile
+                    else:
+                        newfile = p2+'.jpg'
+                        #print newfile
+            print (file)
+            print (newfile)
+            #if file does not exists
+            if os.path.isfile('Q:\\file\\path\\photos\\'+newfile)== 'False':
+                os.rename('Q:\\file\\path\\oldphotos\\'+file, 'Q:\\file\\path\\photos\\'+newfile)
+            else:
+                #print newfile +" "+"already exists"
+                os.remove('Q:\\file\\path\\photos\\'+file)
+                #print file+' has been deleted'
+
+        else:
+            print (file+" "+" does not need renaming")
+    photoList.append(file)
+# prints the list of jpg files
+print (photoList)
+
+word = ''
+# the ArcMap Document from which to replace the photos
+mxd = arcpy.mapping.MapDocument(r"Q:\name\of\arcmap\mxd\file\file.mxd")
+
+# variable listing the elements in layout view
+elm = arcpy.mapping.ListLayoutElements(mxd)[0]
+
+# looping through the elements to search for picture elements
+for elm in arcpy.mapping.ListLayoutElements(mxd, "DATAFRAME_ELEMENT"):
+    #print elm.text
+   for elm in arcpy.mapping.ListLayoutElements(mxd, "PICTURE_ELEMENT"):
+    #print os.path.basename(elm.name)
+    #print os.path.basename(elm.sourceImage)
+    #print elm.sourceImage
+
+# Gets the basename of the jpeg image
+    file = os.path.basename(elm.sourceImage)
+    word = file
+# matches the basename of the jpeg image with the names in the photoList
+    if any(word in file for file in photoList):
+
+    # if element matches print found file
+        print ('found '+ file)
+        #print word
+        #print file
+        print (elm.sourceImage)
+        #print os.path.basename(elm.sourceImage)
+        #print s
+        #print file
+        #print os.path.abspath(newPhoto)
+
+# change the path of the old jpeg with to the new jpeg file
+        newpath = os.path.join("Q:\\file\\path\\photos\\", os.path.basename(elm.sourceImage))
+        #print newpath
+        print (os.path.isfile(newpath))
+        if os.path.isfile(newpath):
+            elm.sourceImage = newpath
+            print (elm.sourceImage)
+        else:
+            print ('Source Image for '+file+' not changed')
+
+# Saves a copy of the mxd file with the new images
+mxd.saveACopy(r"C:\name\of\mxd\file.mxd")
+del mxd

@@ -1,7 +1,8 @@
 #-------------------------------------------------------------------------------
-# Name:        Mapbook by orientation
-# Purpose: Creates landscape or portrait district maps as PDF files of each specified geography of interest
-#
+# Name:        House Mapbook
+# Purpose: Creates landscape or portrait district maps as PDF files of each House district
+# The template needs to set to data driven pages, the title needs to be dynamic text, do not use maplex for labels
+# the visibility of the layers needs to be set prior to running this script
 # Author:      nnayate
 #
 # Created:     01/05/2014

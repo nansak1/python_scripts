@@ -3,10 +3,10 @@
 # Purpose: Creates landscape or portrait district maps as PDF files of each House district
 # The template needs to set to data driven pages, the title needs to be dynamic text, do not use maplex for labels
 # the visibility of the layers needs to be set prior to running this script
-# Author:      nnayate
+# Author:      nansak1
 #
 # Created:     01/05/2014
-# Copyright:   (c) nnayate 2014
+# Copyright:   (c) nansak1 2014
 # Licence:     <your licence>
 #-------------------------------------------------------------------------------
 import arcpy
